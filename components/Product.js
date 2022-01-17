@@ -1,16 +1,33 @@
 import Image from "next/image";
 import { useState } from "react";
 import { StarIcon } from "@heroicons/react/solid";
+import { useRecoilState } from "recoil";
+import { basketState } from "../atoms/basketAtom";
 
 const MAX_RATING = 5;
 const MIN_RATING = 1;
 
 const Product = ({ id, title, price, description, category, image }) => {
+  const [basket, setBasket] = useRecoilState(basketState);
+  console.log(basket);
   const [rating, setRating] = useState(
     Math.floor(Math.random() * (MAX_RATING - MIN_RATING + 1)) + MIN_RATING
   );
 
   const [hasPrime, setHasPrime] = useState(Math.random() < 0.5);
+
+  const addItemToBasket = () => {
+    const product = {
+      id,
+      title,
+      price,
+      description,
+      category,
+      image,
+    };
+    const newBasket = [...basket.items, product];
+    setBasket({ items: newBasket });
+  };
 
   return (
     <div className="relative flex flex-col m-5 bg-white z-30 p-10">
@@ -41,7 +58,9 @@ const Product = ({ id, title, price, description, category, image }) => {
           <p className="text-xs text-gray-500">FREE Next-day Delivery</p>
         </div>
       )}
-      <button className="mt-auto button">Add to Basket</button>
+      <button onClick={addItemToBasket} className="mt-auto button">
+        Add to Basket
+      </button>
     </div>
   );
 };
