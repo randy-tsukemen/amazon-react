@@ -9,7 +9,6 @@ const MIN_RATING = 1;
 
 const Product = ({ id, title, price, description, category, image }) => {
   const [basket, setBasket] = useRecoilState(basketState);
-  console.log(basket);
   const [rating, setRating] = useState(
     Math.floor(Math.random() * (MAX_RATING - MIN_RATING + 1)) + MIN_RATING
   );
@@ -24,6 +23,8 @@ const Product = ({ id, title, price, description, category, image }) => {
       description,
       category,
       image,
+      hasPrime,
+      rating,
     };
     const newBasket = [...basket.items, product];
     setBasket({ items: newBasket });

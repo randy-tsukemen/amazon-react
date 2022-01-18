@@ -1,7 +1,12 @@
 import Image from "next/image";
 import Header from "../components/Header";
+import { useRecoilState } from "recoil";
+import { basketState } from "../atoms/basketAtom";
+import CheckoutProduct from "../components/CheckoutProduct";
 
 const Checkout = () => {
+  const [basket, setBasket] = useRecoilState(basketState);
+
   return (
     <div className="bg-gray-100">
       <Header />
@@ -16,7 +21,28 @@ const Checkout = () => {
             alt=""
           />
           <div className="flex flex-col p-5 space-y-10 bg-white">
-            <h1 className="text-2xl border-b pb-4">Your Shopping Basket</h1>
+            <h1 className="text-2xl border-b pb-4">
+              {basket.items.length === 0
+                ? "Your Amazon Basket is empty"
+                : "Shoppint Basket"}
+            </h1>
+            {basket.items.map(
+              (
+                { id, title, price, description, category, image, hasPrime },
+                i
+              ) => (
+                <CheckoutProduct
+                  key={i}
+                  id={id}
+                  title={title}
+                  price={price}
+                  description={description}
+                  category={category}
+                  image={image}
+                  hasPrime={hasPrime}
+                />
+              )
+            )}
           </div>
         </div>
         {/* Right */}
