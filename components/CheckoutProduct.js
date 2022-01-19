@@ -1,5 +1,7 @@
 import { StarIcon } from "@heroicons/react/solid";
 import Image from "next/image";
+import { useRecoilState } from "recoil";
+import { basketState } from "../atoms/basketAtom";
 
 const CheckoutProduct = ({
   id,
@@ -11,6 +13,32 @@ const CheckoutProduct = ({
   hasPrime,
   rating,
 }) => {
+  const [basket, setBasket] = useRecoilState(basketState);
+
+  const addItemToBasket = () => {
+    const product = {
+      id,
+      title,
+      price,
+      description,
+      category,
+      image,
+      hasPrime,
+      rating,
+    };
+    const newBasket = [...basket.items, product];
+    setBasket({ items: newBasket });
+  };
+
+  const removeItemFromBasket = () => {
+    // const newBasket = basket.items.filter((item) => item.id !== id);
+    const index = basket.items.findIndex((item) => item.id === id);
+    const newBasket = [
+      ...basket.items.slice(0, index),
+      ...basket.items.slice(index + 1),
+    ];
+    setBasket({ items: newBasket });
+  };
   return (
     <div className="grid grid-cols-5">
       <Image src={image} width={200} height={200} objectFit="contain" alt="" />
@@ -43,8 +71,12 @@ const CheckoutProduct = ({
         )}
       </div>
       <div className="flex flex-col space-y-2 my-auto justify-self-end">
-        <button className="button">Add to Basket</button>
-        <button className="button">Remove from Basket</button>
+        <button onClick={addItemToBasket} className="button">
+          Add to Basket
+        </button>
+        <button onClick={removeItemFromBasket} className="button">
+          Remove from Basket
+        </button>
       </div>
     </div>
   );

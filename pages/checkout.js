@@ -3,10 +3,11 @@ import Header from "../components/Header";
 import { useRecoilState } from "recoil";
 import { basketState } from "../atoms/basketAtom";
 import CheckoutProduct from "../components/CheckoutProduct";
+import { useSession } from "next-auth/react";
 
 const Checkout = () => {
   const [basket, setBasket] = useRecoilState(basketState);
-
+  const { data: session, status } = useSession();
   return (
     <div className="bg-gray-100">
       <Header />
@@ -46,6 +47,27 @@ const Checkout = () => {
           </div>
         </div>
         {/* Right */}
+        <div className="flex flex-col bg-white p-10 shadow-md">
+          {basket.items.length > 0 && (
+            <>
+              <h2 className="whitespace-nowrap">
+                Subtotal ({basket.items.length} items):{""}
+              </h2>
+              <span className="font-bold">
+                {basket.items.reduce((acc, { price }) => acc + price, 0)}
+              </span>
+              <button
+                disabled={!session}
+                className={`button mt-2 ${
+                  !session &&
+                  "from-gray-300 to-gray-500 border-gray-200 text-gray-300 cursor-not-allowed"
+                }`}
+              >
+                {!session ? "Login to Checkout" : "Proceed to checkout"}
+              </button>
+            </>
+          )}
+        </div>
       </main>
     </div>
   );
