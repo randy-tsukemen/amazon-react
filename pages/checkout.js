@@ -4,10 +4,23 @@ import { useRecoilState } from "recoil";
 import { basketState } from "../atoms/basketAtom";
 import CheckoutProduct from "../components/CheckoutProduct";
 import { useSession } from "next-auth/react";
+import { loadStripe } from "@stripe/stripe-js";
+import axios from "axios";
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 const Checkout = () => {
   const [basket, setBasket] = useRecoilState(basketState);
   const { data: session, status } = useSession();
+  const createCheckoutSession = async () => {
+    const stripe = await stripePromise;
+
+    // Call the Stripe API to create a checkout session for the order
+    const checkoutSession = await axios.post("/api/create-checkout-session", {
+      items: basket.items,
+      email: session.user.email,
+    });
+  };
+
   return (
     <div className="bg-gray-100">
       <Header />
@@ -62,6 +75,8 @@ const Checkout = () => {
                 )}
               </span>
               <button
+                onClick={createCheckoutSession}
+                role="link"
                 disabled={!session}
                 className={`button mt-2 ${
                   !session &&
