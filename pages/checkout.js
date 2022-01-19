@@ -54,7 +54,12 @@ const Checkout = () => {
                 Subtotal ({basket.items.length} items):{""}
               </h2>
               <span className="font-bold">
-                {basket.items.reduce((acc, { price }) => acc + price, 0)}
+                {new Intl.NumberFormat("ja-JP", {
+                  style: "currency",
+                  currency: "JPY",
+                }).format(
+                  basket.items.reduce((acc, { price }) => acc + price, 0)
+                )}
               </span>
               <button
                 disabled={!session}
