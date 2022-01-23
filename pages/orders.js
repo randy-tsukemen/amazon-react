@@ -3,14 +3,8 @@ import { getSession, useSession } from "next-auth/react";
 import React from "react";
 import Header from "../components/Header";
 import { db } from "../firebase";
-import {
-  collection,
-  query,
-  doc,
-  getDoc,
-  orderBy,
-  getDocs,
-} from "firebase/firestore";
+import { collection, query, orderBy, getDocs } from "firebase/firestore";
+import Order from "../components/Order";
 
 const Orders = ({ orders }) => {
   const { data: session, status } = useSession();
@@ -24,11 +18,25 @@ const Orders = ({ orders }) => {
         </h1>
 
         {session ? (
-          <h2>x Orders</h2>
+          <h2>{orders?.length} Orders</h2>
         ) : (
           <h2>Please sign in to see your orders</h2>
         )}
-        <div className="mt-5 space-y-4"></div>
+        <div className="mt-5 space-y-4">
+          {orders.map(
+            ({ id, amount, amountShipping, items, timestamp, images }) => (
+              <Order
+                key={id}
+                id={id}
+                amount={amount}
+                amountShipping={amountShipping}
+                items={items}
+                timestamp={timestamp}
+                images={images}
+              />
+            )
+          )}
+        </div>
       </main>
     </div>
   );
